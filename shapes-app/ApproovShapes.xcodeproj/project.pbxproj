@@ -98,6 +98,7 @@
 			buildConfigurationList = 8475652621EFCC4B0094ED94 /* Build configuration list for PBXNativeTarget "ApproovShapes" */;
 			buildPhases = (
 				9D6817832790806B00B082C0 /* ShellScript */,
+				9DDA918327A2BEA800B35647 /* ShellScript */,
 				8475651021EFCC4A0094ED94 /* Sources */,
 				8475651121EFCC4A0094ED94 /* Frameworks */,
 				8475651221EFCC4A0094ED94 /* Resources */,
@@ -180,11 +181,29 @@
 			);
 			outputPaths = (
 				"$(SRCROOT)/ApproovShapes/shapes.pb.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nset -e\n\nprotoc --swift_out=. ./ApproovShapes/shapes.proto\n";
+		};
+		9DDA918327A2BEA800B35647 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/ApproovShapes/shapes.proto",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
 				"$(SRCROOT)/ApproovShapes/shapes.grpc.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nset -e\n\nprotoc --swift_out=. --grpc-swift_out=. ./ApproovShapes/shapes.proto\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nset -e\n\nprotoc --grpc-swift_out=. ./ApproovShapes/shapes.proto\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
