@@ -6,7 +6,7 @@ This quickstart is written specifically for native iOS apps that are written in 
 * Access to a trial or paid Approov account
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * [Xcode](https://developer.apple.com/xcode/) version 13 installed (version 13.2.1 is used in this guide)
-* The [protocol compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation), `protoc`, for Google's Protocol Buffers (version 3.18.0 is used in this guide) and the [Swift protoc plugins](https://github.com/grpc/grpc-swift#getting-the-protoc-plugins)
+* The [protocol compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation), `protoc`, for Google's Protocol Buffers (version 3.18.0 is used in this guide) and the [Swift protoc plugins](https://github.com/grpc/grpc-swift#getting-the-protoc-plugins) (downloading a [binary release from GitHub](https://github.com/protocolbuffers/protobuf/releases) and installation through `homebrew` have been used successfully with this guide)
 * The contents of this repo
 * An Apple mobile device with iOS 10 or higher
 
