@@ -29,12 +29,21 @@ class ViewController: UIViewController {
     var shapes: Shapes_ShapeClient?
     var group: EventLoopGroup?
 
+    // API key for grpc.shapes.approov.io:50051
+    let apiKeyHeaderName = "Api-Key"
+    let apiSecretKey = "yXClypapWNHIifHUWmBIyPFAm"
+    // *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION (and comment the line above) ***
+    // let apiSecretKey = "shapes_api_key_placeholder"
+
     deinit {
         // Make sure the group is shutdown when we're done with it.
         try! group?.syncShutdownGracefully()
     }
 
     override func viewDidLoad() {
+        // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
+        // try! ApproovService.initialize(config: "<enter-your-config-string-here>")
+
         // Set up an EventLoopGroup for the connection to run on
         // See: https://github.com/apple/swift-nio#eventloops-and-eventloopgroups
         group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
@@ -44,21 +53,18 @@ class ViewController: UIViewController {
         let port = 50051
         let builder = ClientConnection.usingTLSBackedByNIOSSL(on: group!)
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
-        // let builder = ApproovClientConnection.usingTLSBackedByNIOSSL(approovConfigString: "<enter-your-config-string-here>", on: group!)
+        // let builder = ApproovClientConnection.usingTLSBackedByNIOSSL(on: group!)
         let channel = builder.connect(host: hostname, port: port)
 
         // Provide the channel to the generated client.
-        shapes = Shapes_ShapeClient(channel: channel)
-        // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
-        // shapes = Shapes_ShapeClient(channel: channel, interceptors: ApproovClientInterceptorFactory(hostname: hostname))
+        shapes = Shapes_ShapeClient(channel: channel, interceptors: ClientInterceptorFactory(
+            hostname: hostname, apiKeyHeaderName: apiKeyHeaderName, apiKey: apiSecretKey))
+        // *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION ***
+        // ApproovService.addSubstitutionHeader(header: apiKeyHeaderName, prefix: nil)
 
         super.viewDidLoad()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
     // Check unprotected hello endpoint
     @IBAction func checkHello() {
         // Display busy screen
@@ -111,6 +117,8 @@ class ViewController: UIViewController {
         callbackQueue.async {
             // Create the request
             let shapeRequest = Shapes_ShapeRequest()
+            // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
+            // let shapeRequest = Shapes_ApproovShapeRequest()
 
             // Make the RPC call to the server.
             let shapeRPC = self.shapes!.shape(shapeRequest)

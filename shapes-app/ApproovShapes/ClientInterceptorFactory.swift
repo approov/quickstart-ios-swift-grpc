@@ -23,12 +23,20 @@ import GRPC
 
 // Client interceptor factory for the Shapes app. This serves as an example of how to create an
 // ApproovClientInterceptorFactory for the ClientInterceptorFactoryProtocols of other apps.
-class ApproovClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProtocol {
+class ClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProtocol {
 
-    // hostname/domain for which to add an Approov token to every GRPC request
+    // Hostname/domain for which to add an Approov token to every GRPC request
     let hostname: String
 
-    init(hostname: String) {
+    // API key header name
+    let apiKeyHeaderName: String
+
+    // API key
+    let apiKey: String
+
+    init(hostname: String, apiKeyHeaderName: String, apiKey: String) {
+        self.apiKeyHeaderName = apiKeyHeaderName
+        self.apiKey = apiKey
         self.hostname = hostname
     }
 
@@ -39,9 +47,19 @@ class ApproovClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProto
 
     /// - Returns: Interceptors to use when invoking 'shape' - a GRPC that requires Approov protection.
     func makeShapeInterceptors() -> [ClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>] {
-        return []
+        let interceptors = [APIKeyClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(
+            apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]
+        return interceptors
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
-        // return [ApproovClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(hostname: hostname)]
+        // return interceptors + ApproovClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(hostname: hostname)
+    }
+
+    func makeApproovShapeInterceptors() -> [ClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>] {
+        let interceptors = [APIKeyClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(
+            apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]
+        return interceptors
+        // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
+        // return interceptors + ApproovClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(hostname: hostname)
     }
 
 }
