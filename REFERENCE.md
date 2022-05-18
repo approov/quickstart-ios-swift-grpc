@@ -67,51 +67,6 @@ Removes a `header` previously added using `addSubstitutionHeader`.
 public static func removeSubstitutionHeader(header: String)
 ```
 
-## substituteQueryParams  TODO: Not for GRPC
-Substitutes the query parameters defined in `substitutionQueryParams` in the URL if present. If no substitution is
-made then the original URL is returned, otherwise a new one is constructed with the revised query
-parameter values. If it is not currently possible to fetch secure strings, then ApproovError thrown.
-Note this is a blocking function and must not be called from the UI thread!
-
-```swift
-public static func substituteQueryParams(url: URL) throws -> URL
-```
-
-## addSubstitutionQueryParam  TODO: Not for GRPC
-Adds a query parameter name (`key`) for a query parameter that should be subject to secure strings substitution.
-This means that if the query parameter is present in a URL then the value will be used as a
-key to look up a secure string value which will be substituted as the query parameter value
-instead. This allows easy migration to the use of secure strings.
-
-@param key is the query parameter key name to be added for substitution
-
-```swift
-public static func addSubstitutionQueryParam(key: String)
-```
-
-## removeSubstitutionQueryParam  TODO: Not for GRPC
-Removes a query parameter `key` name previously added using `addSubstitutionQueryParam`.
-
-```swift
-public static func removeSubstitutionQueryParam(key: String)
-```
-
-## addExclusionURLRegex  TODO: Not for GRPC
-Adds an exclusion URL [regular expression](https://regex101.com/) via the `urlRegex` parameter. If a URL for a request matches this regular expression then it will not be subject to any Approov protection.
-
-```swift
-public static func addExclusionURLRegex(urlRegex: String)
-```
-
-Note that this facility must be used with *EXTREME CAUTION* due to the impact of dynamic pinning. Pinning may be applied to all domains added using Approov, and updates to the pins are received when an Approov fetch is performed. If you exclude some URLs on domains that are protected with Approov, then these will be protected with Approov pins but without a path to update the pins until a URL is used that is not excluded. Thus you are responsible for ensuring that there is always a possibility of calling a non-excluded URL, or you should make an explicit call to fetchToken if there are persistent pinning failures. Conversely, use of those option may allow a connection to be established before any dynamic pins have been received via Approov, thus potentially opening the channel to a MitM.
-
-## removeExclusionURLRegex  TODO: Not for GRPC
-Removes an exclusion URL regular expression (`urlRegex`) previously added using `addExclusionURLRegex`.
-
-```swift
-public static func removeExclusionURLRegex(urlRegex: String)
-```
-
 ## prefetch
 Performs a fetch to lower the effective latency of a subsequent token fetch or secure string fetch by starting the operation earlier so the subsequent fetch may be able to use cached data. This initiates the prefetch in a background thread.
 
