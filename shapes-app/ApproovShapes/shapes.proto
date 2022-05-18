@@ -56,7 +56,8 @@ message ShapeReply {
   string message = 1;
 }
 
-// The shape request message
+// The Approov shape request message where the server will check for a valid Approov token in the request's headers
+// before returning a result
 message ApproovShapeRequest {
   string dummy = 1;
 }

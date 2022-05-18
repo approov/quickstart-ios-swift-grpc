@@ -5,8 +5,8 @@ This quickstart is written specifically for native iOS apps that are written in 
 ## WHAT YOU WILL NEED
 * Access to a trial or paid Approov account
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
-* [Xcode](https://developer.apple.com/xcode/) version 13 installed (version 13.2.1 is used in this guide)
-* The [protocol compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation), `protoc`, for Google's Protocol Buffers (version 3.18.0 is used in this guide) and the [Swift protoc plugins](https://github.com/grpc/grpc-swift#getting-the-protoc-plugins) (downloading a [binary release from GitHub](https://github.com/protocolbuffers/protobuf/releases) and installation through `homebrew` have been used successfully with this guide)
+* [Xcode](https://developer.apple.com/xcode/) version 13 installed (version 13.3 is used in this guide)
+* The [protocol compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation), `protoc`, for Google's Protocol Buffers (version 3.18.0 is used in this guide) and the [Swift protoc plugins](https://github.com/grpc/grpc-swift#getting-the-protoc-plugins) (downloading a [binary release from GitHub](https://github.com/protocolbuffers/protobuf/releases) and installation through `homebrew` have both been used successfully with this guide)
 * The contents of this repo
 * An Apple mobile device with iOS 10 or higher
 
@@ -24,7 +24,7 @@ Once the application is running you will see two buttons:
     <img src="readme-images/app-startup.png" width="256" title="Shapes App Startup">
 </p>
 
-Click on the `Hello` button and you should see this:
+Press the `Hello` button and you should see this:
 
 <p>
     <img src="readme-images/hello-okay.png" width="256" title="Hello Okay">
@@ -33,23 +33,25 @@ Click on the `Hello` button and you should see this:
 This checks the connectivity by connecting to `grpc.shapes.approov.io:50051` and making a `hello` remote procedure call. Now press the `Shape` button and you will see this:
 
 <p>
-    <img src="readme-images/shapes-bad.png" width="256" title="Shapes Bad">
+    <img src="readme-images/shapes-good.png" width="256" title="Shapes Good">
 </p>
 
-This contacts `grpc.shapes.approov.io:50051` to get the name of a random shape. It receives the error `unknown(2):Approov Token Missing` because this endpoint is protected with an Approov token. Next, you will add Approov into the app so that it can generate valid Approov tokens and get shapes.
+This contacts `grpc.shapes.approov.io:50051` to get the name of a random shape. This remote procedure call is protected with an API key that is built into the code, and therefore can be easily extracted from the app.
+
+The subsequent steps of this guide show you how to provide better protection, either using an Approov Token or by migrating the API key to become an Approov managed secret.
 
 ## ADD THE APPROOV SERVICE DEPENDENCY
 
-Get the latest Approov integration by using the `swift package manager`. The repository located at `https://github.com/approov/approov-service-ios-swift-grpc.git` includes as a dependency the closed source Approov SDK and includes branches pointing to the relevant Approov SDK release versions. The approov-service-ios-swift-grpc is actually an open source wrapper layer that allows you to easily use Approov with GRPC. Install the dependency by selecting the `ApproovShapes` project in Xcode and then selecting `File->Add Packages`:
+Get the latest Approov integration by using the `Swift Package Manager`. The repository located at `https://github.com/approov/approov-service-ios-swift-grpc.git` includes as a dependency the closed source Approov SDK and includes tags pointing to the relevant Approov SDK release versions. The approov-service-ios-swift-grpc package is actually an open source wrapper layer that allows you to easily use Approov with GRPC. Install the dependency by selecting the `ApproovShapes` project in Xcode and then selecting `File -> Add Packages...`:
 
 ![Add Package Repository](readme-images/add-package-repository.png)
 
-You will then have to select the relevant Approov SDK version you wish to use. To do so, select the `Exact Version` option and enter the SDK version, in this case `2.9.0`.
+You will then have to select the relevant `ApproovGRPC` package version you wish to use; each version is identified by a tag, with the main branch usually pointing to the latest version. Select the `Exact Version` option and enter the package version, in this case `3.0.0`.
 Once you click `Add Package` the last screen will confirm the package product and target selection:
 
 ![Target Selection](readme-images/add-package-confirm.png)
 
-Click `Add Package` again, the Approov SDK is now included as a dependency in your project.
+Click `Add Package` again, the `ApproovGRPC` package is now included as a dependency in your project.
 
 ## ENSURE THE SHAPES API IS ADDED
 
@@ -61,58 +63,75 @@ Tokens for this domain will be automatically signed with the specific secret for
 
 ## MODIFY THE APP TO USE APPROOV
 
-Before using Approov you need to import the `ApproovGRPC` module. In the `ViewController.swift` source file import the service module by uncommenting line 18:
+Before using Approov you need to import the `ApproovGRPC` module. In the `ViewController.swift` source file import the service module by uncommenting line 19:
 
 ```swift
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
 import ApproovGRPC
 ```
 
-Uncomment the the call in the `ViewController.swift` source file at line 47 and comment line 45 to create an `ApproovClientConnection.Builder` instead of a `ClientConnection.Builder`:
-```swift
-// let builder = ClientConnection.usingTLSBackedByNIOSSL(on: group!)
-// *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
-let builder = ApproovClientConnection.usingTLSBackedByNIOSSL(approovConfigString: "<enter-your-config-string-here>", on: group!)
-let channel = builder.connect(host: hostname, port: port)
-```
-This creates a secure GRPC channel as normal, but also pins the connection to the endpoint to ensure that no Man-in-the-Middle can eavesdrop on any communication being made.
+In the same file, locate and uncomment line 46 inside the viewDidLoad function to initialize the ApproovService. The Approov SDK needs a configuration string to identify the account associated with the app. You will have received this in your Approov onboarding email (it will be something like #123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=). Copy this into the source file, replacing the text <enter-your-config-string-here>.
 
-The Approov SDK needs a configuration string to identify the account associated with the app. You will have received this in your Approov onboarding email (it will be something like `#123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=`). Copy this into `ViewController.swift:47`, replacing the text `<enter-your-config-string-here>`.
+```swift
+try! ApproovService.initialize(config: "<enter-you-config-string-here>")
+```
 
 The configuration string can also be obtained by issuing this Approov CLI command:
-```sh
+
+```swift
 approov sdk -getConfigString
 ```
 
-Line 51 needs to be commented out and line 53 needs to be uncommented to create a shapes client with an `ApproovClientInterceptorFactory`. The interceptor factory returns an `ApproovClientInterceptor` for any GRPC call that requires to be protected with Approov. The `ApproovClientInterceptor` automatically fetches an Approov token and adds it as a header to any GRPC request made:
+Uncomment the call in the `ViewController.swift` source file at line 56 and comment line 54 to create an `ApproovClientConnection.Builder` instead of a `ClientConnection.Builder`:
 
 ```swift
-// shapes = Shapes_ShapeClient(channel: channel)
+// let builder = ClientConnection.usingTLSBackedByNIOSSL(on: group!)
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
-shapes = Shapes_ShapeClient(channel: channel, interceptors: ApproovClientInterceptorFactory(hostname: hostname))
+let builder = ApproovClientConnection.usingTLSBackedByNIOSSL(on: group!)
+let channel = builder.connect(host: hostname, port: port)
 ```
+
+This creates a secure GRPC channel as normal, but also pins the connection to the endpoint to ensure that no Man-in-the-Middle can eavesdrop on any communication being made.
+
+In `ViewController.swift`, uncomment line 125 (and comment line 123) to change the GRPC request to an `ApproovShapeRequest` for which the server will check for the presence of a valid Approov token in the request's headers before providing a result.
+
+In the creation of the shapes client at line 61, a ClientInterceptorFactory is passed in that provides interceptors to add an API key to selected GRPC requests:
+
+```swift
+shapes = Shapes_ShapeClient(
+    channel: channel,
+    interceptors: ClientInterceptorFactory(
+        hostname: hostname, apiKeyHeaderName: apiKeyHeaderName, apiKey: apiSecretKey)
+)
+```
+
+The interceptor factory needs to be changed so it additionally returns an `ApproovClientInterceptor` for any GRPC that requires to be protected with Approov. The `ApproovClientInterceptor` automatically fetches an Approov token and adds it as a header to any GRPC request made.
 
 Note that this interceptor may cancel a request if it is unable to fetch an Approov token, typically due to no or poor Internet connectivity. If this happens, then the user should be able to initiate a retry. During development a cancel may occur due to a misconfiguration, see [Token Fetch Errors](https://approov.io/docs/latest/approov-usage-documentation/#token-fetch-errors).
 
-The `ApproovClientInterceptorFactory` 's implementation is in file `ApproovClientInterceptorFactory.swift`. Open this file and uncomment lines 19 and 44 (and comment line 42) to activate the use of an ApproovClientInterceptor in any `shape` GRPC:
+The `ClientInterceptorFactory`'s implementation is in file `ClientInterceptorFactory.swift`. Open this file, uncomment line 19 to import the `ApproovGRPC` module
 
 ```swift
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV ***
 import ApproovGRPC
 ```
-...
+
+and uncomment line 60 (and comment line 58) to activate the use of an ApproovClientInterceptor in any `approovShape` GRPC.
 
 ```swift
-func makeShapeInterceptors() -> [ClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>] {
-    // return []
+func makeApproovShapeInterceptors() -> [ClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>] {
+    let interceptors = [APIKeyClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(
+        apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]
+    // return interceptors
     // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
-    return [ApproovClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(hostname: hostname)]
+    return interceptors + ApproovClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(hostname: hostname)
 ```
+
 Build the app again to ensure that everything is up to date.
 
 ## REGISTER YOUR APP WITH APPROOV
 
-In order for Approov to recognize the app as being valid it needs to be registered with the service. This requires building an `.ipa` file either using the `Archive` option of Xcode (this option will not be available if using the simulator) or building the app and then creating a compressed zip file and renaming it. We use the second option for which we have to make sure a `Any iOS Device` is selected as build destination. This ensures an `embedded.mobileprovision` is included in the application package which is a requirement for the `approov` command line tool.
+In order for Approov to recognize the app as being valid it needs to be registered with the service. This requires building an `.ipa` file using the `Archive` option of Xcode (this option will not be available if using the simulator). Make sure `Any iOS Device` is selected as build destination. This ensures an `embedded.mobileprovision` is included in the application package which is a requirement for the `approov` command line tool.
 
 ![Target Device](readme-images/target-device.png)
 
@@ -128,7 +147,7 @@ $ approov registration -add ApproovShapes.ipa
 
 Install the `ApproovShapes.ipa` that you just registered on the device. You will need to remove the old app from the device first. If you are using an emulator, you will need to learn how to ensure your device [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) since the simulators are not real devices and you will not be able to successfully authenticate the app.
 
-If using Mac OS Catalina, simply drag the `ipa` file to the device. Alternatively you can select `Window`, then `Devices and Simulators` and after selecting your device click on the small `+` sign to locate the `ipa` archive you would like to install.
+Simply drag the `ipa` file to the device. Alternatively you can select `Window`, then `Devices and Simulators` and after selecting your device click on the small `+` sign to locate the `.ipa` file you would like to install.
 
 ![Install IPA Xcode](readme-images/install-ipa.png)
 
@@ -138,7 +157,7 @@ Launch the app and press the `Shape` button. You should now see this (or another
     <img src="readme-images/shapes-good.png" width="256" title="Shapes Good">
 </p>
 
-This means that the app is getting a validly signed Approov token to present to the shapes endpoint.
+This means that the app is getting a validly signed Approov token to present to the shapes server.
 
 ## WHAT IF I DON'T GET SHAPES
 
@@ -151,3 +170,67 @@ If you still don't get a valid shape then there are some things you can try. Rem
 * Consider using an [Annotation Policy](https://approov.io/docs/latest/approov-usage-documentation/#annotation-policies) during development to directly see why the device is not being issued with a valid token.
 * Use `approov metrics` to see [Live Metrics](https://approov.io/docs/latest/approov-usage-documentation/#live-metrics) of the cause of failure.
 
+## SHAPES APP WITH SECRETS PROTECTION
+
+This section provides an illustration of an alternative option for Approov protection if you are not able to modify the backend to add an Approov token check. We continue to use a `shapes` GRPC that simply checks for an API key, so please change back the code so it uses this in ViewController.swift at lines 123-:
+
+```swift
+let shapeRequest = Shapes_ShapeRequest()
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
+// let shapeRequest = Shapes_ApproovShapeRequest()
+```
+
+Also undo the changes made to `ClientInterceptorFactory.swift`, lines 58-60:
+
+```swift
+return interceptors
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
+// return interceptors + ApproovClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(hostname: hostname)
+```
+
+The value of `apiSecretKey` variable needs to be changed to `"shapes_api_key_placeholder"`, removing the actual API key from the code in ViewController.swift, lines 35-37:
+
+```swift
+// let apiSecretKey = "yXClypapWNHIifHUWmBIyPFAm"
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION (and comment the line above) ***
+let apiSecretKey = "shapes_api_key_placeholder"
+```
+
+We also need to inform the `ApproovService` module that it needs to substitute the placeholder value for the real API key on the `Api-Key` header. Find line 67 and uncomment it as shown:
+
+```swift
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION ***
+ApproovService.addSubstitutionHeader(header: apiKeyHeaderName, prefix: nil)
+```
+
+This processes the headers and replaces in the actual API key as required.
+
+Next we enable Approov's [Secure Strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) feature:
+
+```
+approov secstrings -setEnabled
+```
+
+> Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
+
+You must inform Approov that it should map `shapes_api_key_placeholder` to `yXClypapWNHIifHUWmBIyPFAm` (the actual API key) in requests as follows:
+
+```
+approov secstrings -addKey shapes_api_key_placeholder -predefinedValue yXClypapWNHIifHUWmBIyPFAm
+```
+
+> Note that this command also requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
+
+Build and run the app again to ensure that the `ApproovShapes.ipa` in the generated build outputs is up to date. You need to register the updated app with Approov. Using the command line register the app with:
+
+```
+approov registration -add ApproovShapes.ipa
+```
+
+Run the app again without making any changes to the app and press the `Shape` button. You should now see this (or another shape):
+
+<p>
+    <img src="readme-images/shapes-good.png" width="256" title="Shapes Good">
+</p>
+
+This means that the registered app is able to access the API key, even though it is no longer embedded in the app code, and provide it to the shapes request.
