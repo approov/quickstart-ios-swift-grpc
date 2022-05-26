@@ -117,15 +117,12 @@ class ViewController: UIViewController {
         }
 
         // Run RPC asynchronously
-        let callbackQueue = DispatchQueue(label: "io.approov.helloCallbackQueue")
+        let callbackQueue = DispatchQueue(label: "io.approov.shapeCallbackQueue")
         callbackQueue.async {
-            // Create the request
-            let shapeRequest = Shapes_ShapeRequest()
+            // Make the remote procedure call to the server.
+            let shapeRPC = self.shapes!.shape(Shapes_ShapeRequest())
             // *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
-            // let shapeRequest = Shapes_ApproovShapeRequest()
-
-            // Make the RPC call to the server.
-            let shapeRPC = self.shapes!.shape(shapeRequest)
+            // let shapeRPC = self.shapes!.approovShape(Shapes_ApproovShapeRequest())
 
             // wait() on the response
             var message: String

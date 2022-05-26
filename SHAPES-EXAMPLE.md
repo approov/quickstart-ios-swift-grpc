@@ -42,7 +42,7 @@ The subsequent steps of this guide show you how to provide better protection, ei
 
 ## ADD THE APPROOV SERVICE DEPENDENCY
 
-Get the latest Approov integration by using the `Swift Package Manager`. The repository located at `https://github.com/approov/approov-service-ios-swift-grpc.git` includes as a dependency the closed source Approov SDK and includes tags pointing to the relevant Approov SDK release versions. The approov-service-ios-swift-grpc package is actually an open source wrapper layer that allows you to easily use Approov with GRPC. Install the dependency by selecting the `ApproovShapes` project in Xcode and then selecting `File -> Add Packages...`:
+Get the latest Approov integration by using the `Swift Package Manager`. The repository located at `https://github.com/approov/approov-service-ios-swift-grpc.git` includes as a dependency the closed source Approov SDK and includes tags pointing to the relevant Approov SDK release versions. The approov-service-ios-swift-grpc package is actually an open source wrapper layer that allows you to easily use Approov with GRPC. Install the dependency by selecting the `ApproovShapes` project in Xcode, choosing `File`, `Add Packages...` from the menu and then entering `https://github.com/approov/approov-service-ios-swift-grpc.git` into the search field of the add package dialog:
 
 ![Add Package Repository](readme-images/add-package-repository.png)
 
@@ -78,11 +78,11 @@ try! ApproovService.initialize(config: "<enter-you-config-string-here>")
 
 The configuration string can also be obtained by issuing this Approov CLI command:
 
-```swift
+```
 approov sdk -getConfigString
 ```
 
-Uncomment the call in the `ViewController.swift` source file at line 56 and comment line 54 to create an `ApproovClientConnection.Builder` instead of a `ClientConnection.Builder`:
+Uncomment the call in the `ViewController.swift` source file at line 57 and comment line 55 to create an `ApproovClientConnection.Builder` instead of a `ClientConnection.Builder`:
 
 ```swift
 // let builder = ClientConnection.usingTLSBackedByNIOSSL(on: group!)
@@ -93,7 +93,14 @@ let channel = builder.connect(host: hostname, port: port)
 
 This creates a secure GRPC channel as normal, but also pins the connection to the endpoint to ensure that no Man-in-the-Middle can eavesdrop on any communication being made.
 
-In `ViewController.swift`, uncomment line 125 (and comment line 123) to change the GRPC request to an `ApproovShapeRequest` for which the server will check for the presence of a valid Approov token in the request's headers before providing a result.
+In `ViewController.swift`, uncomment line 125 (and comment line 123) to change the GRPC request to an `ApproovShapeRequest` for which the server will check for the presence of a valid Approov token in the request's headers before providing a result:
+
+```swift
+// Make the remote procedure call to the server.
+// let shapeRPC = self.shapes!.shape(Shapes_ShapeRequest())
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
+let shapeRPC = self.shapes!.approovShape(Shapes_ApproovShapeRequest())
+```
 
 In the creation of the shapes client at line 61, a ClientInterceptorFactory is passed in that provides interceptors to add an API key to selected GRPC requests:
 
@@ -116,7 +123,7 @@ The `ClientInterceptorFactory`'s implementation is in file `ClientInterceptorFac
 import ApproovGRPC
 ```
 
-and uncomment line 60 (and comment line 58) to activate the use of an ApproovClientInterceptor in any `approovShape` GRPC.
+and uncomment line 62 (and comment line 60) to activate the use of an ApproovClientInterceptor in any `approovShape` GRPC.
 
 ```swift
 func makeApproovShapeInterceptors() -> [ClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>] {
@@ -143,7 +150,7 @@ Copy the `ApproovShapes.ipa` file to a convenient working directory. Register th
 $ approov registration -add ApproovShapes.ipa
 ```
 
-## RUNNING THE SHAPES APP WITH APPROOV
+## SHAPES APP WITH APPROOV API PROTECTION
 
 Install the `ApproovShapes.ipa` that you just registered on the device. You will need to remove the old app from the device first. If you are using an emulator, you will need to learn how to ensure your device [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) since the simulators are not real devices and you will not be able to successfully authenticate the app.
 
@@ -172,20 +179,12 @@ If you still don't get a valid shape then there are some things you can try. Rem
 
 ## SHAPES APP WITH SECRETS PROTECTION
 
-This section provides an illustration of an alternative option for Approov protection if you are not able to modify the backend to add an Approov token check. We continue to use a `shapes` GRPC that simply checks for an API key, so please change back the code so it uses this in ViewController.swift at lines 123-:
+This section provides an illustration of an alternative option for Approov protection if you are not able to modify the backend to add an Approov token check. We revert to using a `shapes` GRPC that simply checks for an API key, so please undo the code changes made to ViewController.swift at lines 123-125:
 
 ```swift
 let shapeRequest = Shapes_ShapeRequest()
 // *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
 // let shapeRequest = Shapes_ApproovShapeRequest()
-```
-
-Also undo the changes made to `ClientInterceptorFactory.swift`, lines 58-60:
-
-```swift
-return interceptors
-// *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
-// return interceptors + ApproovClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(hostname: hostname)
 ```
 
 The value of `apiSecretKey` variable needs to be changed to `"shapes_api_key_placeholder"`, removing the actual API key from the code in ViewController.swift, lines 35-37:
@@ -204,6 +203,14 @@ ApproovService.addSubstitutionHeader(header: apiKeyHeaderName, prefix: nil)
 ```
 
 This processes the headers and replaces in the actual API key as required.
+
+In `ClientInterceptorFactory.swift` uncomment line 54 (and comment line 52) to activate the use of an ApproovClientInterceptor in any `shape` GRPC.
+
+```swift
+// return interceptors
+// *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION (and comment the line above) ***
+return interceptors + [ApproovClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(hostname: hostname)]
+```
 
 Next we enable Approov's [Secure Strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) feature:
 

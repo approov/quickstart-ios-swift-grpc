@@ -50,6 +50,8 @@ class ClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProtocol {
         let interceptors = [APIKeyClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(
             apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]
         return interceptors
+        // *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION (and comment the line above) ***
+        // return interceptors + [ApproovClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(hostname: hostname)]
     }
 
     func makeApproovShapeInterceptors() -> [ClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>] {
@@ -57,7 +59,7 @@ class ClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProtocol {
             apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]
         return interceptors
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV API PROTECTION (and comment the line above) ***
-        // return interceptors + ApproovClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(hostname: hostname)
+        // return interceptors + [ApproovClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(hostname: hostname)]
     }
 
 }
