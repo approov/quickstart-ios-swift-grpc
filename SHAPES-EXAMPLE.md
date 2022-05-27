@@ -150,6 +150,8 @@ Copy the `ApproovShapes.ipa` file to a convenient working directory. Register th
 $ approov registration -add ApproovShapes.ipa
 ```
 
+> **IMPORTANT:** The registration takes up to 30 seconds to propagate across the Approov Cloud Infrastructure, therefore please don't try to run the app again before this time has elapsed.
+
 ## SHAPES APP WITH APPROOV API PROTECTION
 
 Install the `ApproovShapes.ipa` that you just registered on the device. You will need to remove the old app from the device first. If you are using an emulator, you will need to learn how to ensure your device [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) since the simulators are not real devices and you will not be able to successfully authenticate the app.
