@@ -25,27 +25,36 @@ import GRPC
 // ApproovClientInterceptorFactory for the ClientInterceptorFactoryProtocols of other apps.
 class ClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProtocol {
 
-    // Hostname/domain for which to add an Approov token to every GRPC request
+    /** Hostname/domain for which to add an Approov token to GRPC requests and/or perform header substitution */
     let hostname: String
 
-    // API key header name
+    /** API key header name */
     let apiKeyHeaderName: String
 
-    // API key
+    /** API key */
     let apiKey: String
 
+    /**
+     * @param hostname the domain for which to add an Approov token and/or perform header value substitution
+     * @param apiKeyHeaderName the name of the header in which to add the API key
+     * @param apiKey the (secret) API key to add in the API-key header
+     */
     init(hostname: String, apiKeyHeaderName: String, apiKey: String) {
         self.apiKeyHeaderName = apiKeyHeaderName
         self.apiKey = apiKey
         self.hostname = hostname
     }
 
-    /// - Returns: Interceptors to use when invoking 'hello' - a GRPC that does not require Approov protection.
+    /**
+     * @return Interceptors to use when invoking 'hello' - a GRPC that does not require Approov protection.
+     */
     func makeHelloInterceptors() -> [ClientInterceptor<Shapes_HelloRequest, Shapes_HelloReply>] {
         return []
     }
 
-    /// - Returns: Interceptors to use when invoking 'shape' - a GRPC that requires Approov protection.
+    /**
+     * @return Interceptors to use when invoking 'shape' - a GRPC that requires an API key.
+     */
     func makeShapeInterceptors() -> [ClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>] {
         let interceptors = [APIKeyClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(
             apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]
@@ -54,6 +63,10 @@ class ClientInterceptorFactory: Shapes_ShapeClientInterceptorFactoryProtocol {
         // return interceptors + [ApproovClientInterceptor<Shapes_ShapeRequest, Shapes_ShapeReply>(hostname: hostname)]
     }
 
+    /**
+     * @return Interceptors to use when invoking 'approovShape' - a GRPC that requires an Approov token in addition to
+     * an API key.
+     */
     func makeApproovShapeInterceptors() -> [ClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>] {
         let interceptors = [APIKeyClientInterceptor<Shapes_ApproovShapeRequest, Shapes_ShapeReply>(
             apiKeyHeaderName: apiKeyHeaderName, apiKey: apiKey)]

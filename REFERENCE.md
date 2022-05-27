@@ -5,11 +5,9 @@ This provides a reference for all of the static methods defined on `ApproovServi
 import ApproovGRPC
 ```
 
-Various methods may throw an `ApproovError` if there is a problem. The variable `localizedDescription` provides a descriptive message.
+Various methods may throw an `ApproovError` if there is a problem. The enumeration case gives the type of error and the associated value `message` provides a descriptive message. Most error cases represent unrecoverable failures, but if a method throws an `ApproovError.networkingError`, then this indicates the problem was caused by a networking issue, and a user initiated retry should be allowed.
 
-If a method throws an `ApproovNetworkError` (an enumeration case of `ApproovError`), then this indicates the problem was caused by a networking issue, and a user initiated retry should be allowed.
-
-If a method throws an `ApproovRejectionEerror` (a an enumeration case of `ApproovException`), then this indicates the problem was that the app failed attestation. An additional associated value `ARC` provides the [Attestation Response Code](https://approov.io/docs/latest/approov-usage-documentation/#attestation-response-code), which could be provided to the user for communication with your app support to determine the reason for failure, without this being revealed to the end user. The associated value `rejectionReasons` provides the [Rejection Reasons](https://approov.io/docs/latest/approov-usage-documentation/#rejection-reasons) if the feature is enabled, providing a comma separated list of reasons why the app attestation was rejected.
+If a method throws an `ApproovError.rejectionError`, then this indicates the problem was that the app failed attestation. An additional associated value `ARC` provides the [Attestation Response Code](https://approov.io/docs/latest/approov-usage-documentation/#attestation-response-code), which could be provided to the user for communication with your app support to determine the reason for failure, without this being revealed to the end user. The associated value `rejectionReasons` provides the [Rejection Reasons](https://approov.io/docs/latest/approov-usage-documentation/#rejection-reasons) if the feature is enabled, providing a comma separated list of reasons why the app attestation was rejected.
 
 ## Initialize
 Initializes the Approov SDK and thus enables the Approov features. The `config` will have been provided in the initial onboarding or email or can be [obtained using the Approov CLI](https://approov.io/docs/latest/approov-usage-documentation/#getting-the-initial-sdk-configuration). This will generate an error if a second attempt is made at initialization with a different `config`.
@@ -21,7 +19,7 @@ public static func initialize(config: String) throws
 It is possible to pass an empty `config` string to indicate that no initialization is required. Only do this if you are also using a different Approov quickstart in your app (which will use the same underlying Approov SDK) and this will have been initialized first.
 
 ## proceedOnNetworkFail
-If `proceedOnNetworkFail` is set to `true` then this indicates that the networking should proceed anyway if it is not possible to obtain an Approov token due to a networking failure. If this is called then the backend API can receive calls without the expected Approov token header being added, or without header/query parameter substitutions being made. This should only ever be used if there is some particular reason, perhaps due to local network conditions, that you believe that traffic to the Approov cloud service will be particularly problematic.
+If `proceedOnNetworkFail` is set to `true` then this indicates that the networking should proceed anyway if it is not possible to obtain an Approov token due to a networking failure. If this is called then the backend API can receive calls without the expected Approov token header being added, or without header substitutions being made. This should only ever be used if there is some particular reason, perhaps due to local network conditions, that you believe that traffic to the Approov cloud service will be particularly problematic.
 
 ```swift
 public static var proceedOnNetworkFail: Bool
@@ -33,14 +31,14 @@ Note that this should be used with *CAUTION* because it may allow a connection t
 Allows to set the name of the header (`approovTokenHeader`) that the Approov token is added on, as well as an optional `prefix` String (such as "`Bearer `"). Set `approovTokenPrefix` to the empty string if it is not required. By default the token is provided on `Approov-Token` with no prefix.
 
 ```swift
-    public static var approovTokenHeaderAndPrefix: (approovTokenHeader: String, approovTokenPrefix: String)
+public static var approovTokenHeaderAndPrefix: (approovTokenHeader: String, approovTokenPrefix: String)
 ```
 
 ## bindHeader
 Variable that holds the name of a binding header that may be present on requests being made. This is for the [token binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) feature. A header should be chosen whose value is unchanging for most requests (such as an Authorization header). If the `bindHeader` is present, then a hash of the header value is included in the issued Approov tokens to bind them to the value. This may then be verified by the backend API integration.
 
 ```swift
-    public static var bindHeader: String
+public static var bindHeader: String
 ```
 
 ## updateRequestHeaders
@@ -81,7 +79,7 @@ Performs a precheck to determine if the app will pass attestation. This requires
 public static func precheck() throws
 ```
 
-This throws `ApproovException` if the precheck failed. This will likely require network access so may take some time to complete, and should not be called from the UI thread.
+This throws `ApproovError` if the precheck failed. This will likely require network access so may take some time to complete, and should not be called from the UI thread.
 
 ## getDeviceID
 Gets the [device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id) used by Approov to identify the particular device that the SDK is running on. Note that different Approov apps on the same device will return a different ID. Moreover, the ID may be changed by an uninstall and reinstall of the app.
@@ -117,7 +115,7 @@ Gets the [message signature](https://approov.io/docs/latest/approov-usage-docume
 public static func getMessageSignature(message: String) throws -> String
 ```
 
-This throws `ApproovException` if the there was a problem obtaining a signature.
+This throws `ApproovError` if the there was a problem obtaining a signature.
 
 ## fetchSecureString
 Fetches a [secure string](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) with the given `key` if `newDef` is `nil`. Returns `nil` if the `key` secure string is not defined. If `newDef` is not `nil` then a secure string for the particular app instance may be defined. In this case the new value is returned as the secure string. Use of an empty string for `newDef` removes the string entry. Note that the returned string should NEVER be cached by your app, you should call this function when it is needed.
