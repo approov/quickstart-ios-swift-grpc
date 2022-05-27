@@ -12,8 +12,9 @@
 		8475651A21EFCC4A0094ED94 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8475651921EFCC4A0094ED94 /* ViewController.swift */; };
 		8475651D21EFCC4A0094ED94 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8475651B21EFCC4A0094ED94 /* Main.storyboard */; };
 		8475652221EFCC4B0094ED94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8475652021EFCC4B0094ED94 /* LaunchScreen.storyboard */; };
-		9D02F98F271EFEB500264244 /* ApproovClientInterceptorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D02F98E271EFEB500264244 /* ApproovClientInterceptorFactory.swift */; };
+		9D02F98F271EFEB500264244 /* ClientInterceptorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D02F98E271EFEB500264244 /* ClientInterceptorFactory.swift */; };
 		9D68177E27907B5F00B082C0 /* shapes.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D68177D27907B5F00B082C0 /* shapes.grpc.swift */; };
+		9D938AC2282EB49100EA2BF1 /* APIKeyClientInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D938AC1282EB49100EA2BF1 /* APIKeyClientInterceptor.swift */; };
 		9DF9E604270EF69B006AC9D3 /* shapes.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF9E602270EF69B006AC9D3 /* shapes.pb.swift */; };
 		9DF9E607270EFC2D006AC9D3 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 9DF9E606270EFC2D006AC9D3 /* GRPC */; };
 /* End PBXBuildFile section */
@@ -39,9 +40,10 @@
 		8475651C21EFCC4A0094ED94 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8475652121EFCC4B0094ED94 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8475652321EFCC4B0094ED94 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9D02F98E271EFEB500264244 /* ApproovClientInterceptorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproovClientInterceptorFactory.swift; sourceTree = "<group>"; };
+		9D02F98E271EFEB500264244 /* ClientInterceptorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientInterceptorFactory.swift; sourceTree = "<group>"; };
 		9D68177D27907B5F00B082C0 /* shapes.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = shapes.grpc.swift; sourceTree = "<group>"; };
 		9D68178227907F7B00B082C0 /* shapes.proto */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.protobuf; name = shapes.proto; path = ApproovShapes/shapes.proto; sourceTree = "<group>"; };
+		9D938AC1282EB49100EA2BF1 /* APIKeyClientInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyClientInterceptor.swift; sourceTree = "<group>"; };
 		9DF9E602270EF69B006AC9D3 /* shapes.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = shapes.pb.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,7 +87,8 @@
 				8475652021EFCC4B0094ED94 /* LaunchScreen.storyboard */,
 				8475651B21EFCC4A0094ED94 /* Main.storyboard */,
 				8475651921EFCC4A0094ED94 /* ViewController.swift */,
-				9D02F98E271EFEB500264244 /* ApproovClientInterceptorFactory.swift */,
+				9D02F98E271EFEB500264244 /* ClientInterceptorFactory.swift */,
+				9D938AC1282EB49100EA2BF1 /* APIKeyClientInterceptor.swift */,
 			);
 			path = ApproovShapes;
 			sourceTree = "<group>";
@@ -213,9 +216,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D68177E27907B5F00B082C0 /* shapes.grpc.swift in Sources */,
+				9D938AC2282EB49100EA2BF1 /* APIKeyClientInterceptor.swift in Sources */,
 				8475651A21EFCC4A0094ED94 /* ViewController.swift in Sources */,
 				9DF9E604270EF69B006AC9D3 /* shapes.pb.swift in Sources */,
-				9D02F98F271EFEB500264244 /* ApproovClientInterceptorFactory.swift in Sources */,
+				9D02F98F271EFEB500264244 /* ClientInterceptorFactory.swift in Sources */,
 				8475651821EFCC4A0094ED94 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
