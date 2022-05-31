@@ -114,7 +114,7 @@ shapes = Shapes_ShapeClient(
 
 The interceptor factory needs to be changed so it additionally returns an `ApproovClientInterceptor` for any GRPC that requires to be protected with Approov. The `ApproovClientInterceptor` automatically fetches an Approov token and adds it as a header to any GRPC request made.
 
-Note that this interceptor may cancel a request if it is unable to fetch an Approov token, typically due to no or poor Internet connectivity. If this happens, then the user should be able to initiate a retry. During development a cancel may occur due to a misconfiguration, see [Token Fetch Errors](https://approov.io/docs/latest/approov-usage-documentation/#token-fetch-errors).
+Note that this interceptor may cancel a request if it is unable to fetch an Approov token, typically due to no or poor Internet connectivity. If this happens, then the user should be able to initiate a retry. During development a cancel may occur due to a misconfiguration, see [Approov Fetch Status](https://approov.io/docs/latest/approov-usage-documentation/#approov-fetch-status).
 
 The `ClientInterceptorFactory`'s implementation is in file `ClientInterceptorFactory.swift`. Open this file, uncomment line 19 to import the `ApproovGRPC` module
 
