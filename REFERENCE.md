@@ -130,7 +130,7 @@ This throws `ApproovError` if the there was a problem obtaining the secure strin
 Fetches a [custom JWT](https://approov.io/docs/latest/approov-usage-documentation/#custom-jwts) with the given marshaled JSON `payload`.
 
 ```swift
-public static func fetchCustomJWT(payload: String) throws -> String?
+public static func fetchCustomJWT(payload: String) throws -> String
 ```
 
 This throws `ApproovError` if the there was a problem obtaining the custom JWT. This may require network access so may take some time to complete, and should not be called from the UI thread.
