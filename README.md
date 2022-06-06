@@ -95,4 +95,4 @@ Note that it is possible to use both approaches side-by-side in the same app, in
 See [REFERENCE](https://github.com/approov/quickstart-ios-swift-grpc/blob/master/REFERENCE.md) for a complete list of all of the `ApproovService` methods.
 
 ## BITCODE SUPPORT
-In order to use a bitcode enabled Approov service, you can still use the swift package repository at `https://github.com/approov/approov-service-ios-swift-grpc.git` but append the `-bitcode` suffix to the required SDK version, i.e. you could use `3.0.0-bitcode` as a version in the Swift Package Manager window.
+In order to use a bitcode enabled Approov service, you can still use the swift package repository at `https://github.com/approov/approov-service-ios-swift-grpc.git` but append the `-bitcode` suffix to the required SDK version, i.e. you could use `3.0.1-bitcode` as a version in the Swift Package Manager window.
