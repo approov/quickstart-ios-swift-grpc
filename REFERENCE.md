@@ -88,7 +88,7 @@ Gets the [device ID](https://approov.io/docs/latest/approov-usage-documentation/
 public static func getDeviceID() throws -> String
 ```
 
-This throws `ApproovError` if the there was a problem obtaining the device ID.
+This throws `ApproovError` if there was a problem obtaining the device ID.
 
 ## setDataHashInToken
 Directly sets the [token binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) hash to be included in subsequently fetched Approov tokens. If the hash is different from any previously set value then this will cause the next token fetch operation to fetch a new token with the correct payload data hash. The hash appears in the `pay` claim of the Approov token as a base64 encoded string of the SHA256 hash of the data. Note that the data is hashed locally and never sent to the Approov cloud service. This is an alternative to using `bindHeader` and you should not use both methods at the same time.
@@ -97,7 +97,7 @@ Directly sets the [token binding](https://approov.io/docs/latest/approov-usage-d
 public static func setDataHashInToken(data: String)
 ```
 
-This throws `ApproovError` if the there was a problem changing the data hash.
+This throws `ApproovError` if there was a problem changing the data hash.
 
 ## fetchToken
 Performs an Approov token fetch for the given `url`. This should be used in situations where it is not possible to use the `updateRequestHeaders` method to add the token. Note that the returned token should NEVER be cached by your app, you should call this function when it is needed.
@@ -106,7 +106,7 @@ Performs an Approov token fetch for the given `url`. This should be used in situ
 public static func fetchToken(url: String) throws -> String
 ```
 
-This throws `ApproovError` if the there was a problem obtaining an Approov token. This may require network access so may take some time to complete, and should not be called from the UI thread.
+This throws `ApproovError` if there was a problem obtaining an Approov token. This may require network access so may take some time to complete, and should not be called from the UI thread.
 
 ## getMessageSignature
 Gets the [message signature](https://approov.io/docs/latest/approov-usage-documentation/#message-signing) for the given `message`. This is returned as a base64 encoded signature. This feature uses an account specific message signing key that is transmitted to the SDK after a successful fetch if the facility is enabled for the account. Note that if the attestation failed then the signing key provided is actually random so that the signature will be incorrect. An Approov token should always be included in the message being signed and sent alongside this signature to prevent replay attacks.
@@ -115,7 +115,7 @@ Gets the [message signature](https://approov.io/docs/latest/approov-usage-docume
 public static func getMessageSignature(message: String) throws -> String
 ```
 
-This throws `ApproovError` if the there was a problem obtaining a signature.
+This throws `ApproovError` if there was a problem obtaining a signature.
 
 ## fetchSecureString
 Fetches a [secure string](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) with the given `key` if `newDef` is `nil`. Returns `nil` if the `key` secure string is not defined. If `newDef` is not `nil` then a secure string for the particular app instance may be defined. In this case the new value is returned as the secure string. Use of an empty string for `newDef` removes the string entry. Note that the returned string should NEVER be cached by your app, you should call this function when it is needed.
@@ -124,7 +124,7 @@ Fetches a [secure string](https://approov.io/docs/latest/approov-usage-documenta
 public static func fetchSecureString(key: String, newDef: String?) throws -> String?
 ```
 
-This throws `ApproovError` if the there was a problem obtaining the secure string. This may require network access so may take some time to complete, and should not be called from the UI thread.
+This throws `ApproovError` if there was a problem obtaining the secure string. This may require network access so may take some time to complete, and should not be called from the UI thread.
 
 ## fetchCustomJWT
 Fetches a [custom JWT](https://approov.io/docs/latest/approov-usage-documentation/#custom-jwts) with the given marshaled JSON `payload`.
@@ -133,4 +133,4 @@ Fetches a [custom JWT](https://approov.io/docs/latest/approov-usage-documentatio
 public static func fetchCustomJWT(payload: String) throws -> String
 ```
 
-This throws `ApproovError` if the there was a problem obtaining the custom JWT. This may require network access so may take some time to complete, and should not be called from the UI thread.
+This throws `ApproovError` if there was a problem obtaining the custom JWT. This may require network access so may take some time to complete, and should not be called from the UI thread.
