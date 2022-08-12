@@ -56,9 +56,11 @@ Click `Add Package` again, the `ApproovGRPC` package is now included as a depend
 ## ENSURE THE SHAPES API IS ADDED
 
 In order for Approov tokens to be generated for `grpc.shapes.approov.io` it is necessary to inform Approov about it:
+
 ```
-$ approov api -add grpc.shapes.approov.io
+approov api -add grpc.shapes.approov.io
 ```
+
 Tokens for this domain will be automatically signed with the specific secret for this domain, rather than the normal one for your account.
 
 ## MODIFY THE APP TO USE APPROOV
@@ -147,7 +149,7 @@ We can now build the application by selecting `Product` and then `Archive`. Sele
 Copy the `ApproovShapes.ipa` file to a convenient working directory. Register the app with Approov:
 
 ```
-$ approov registration -add ApproovShapes.ipa
+approov registration -add ApproovShapes.ipa
 ```
 
 > **IMPORTANT:** The registration takes up to 30 seconds to propagate across the Approov Cloud Infrastructure, therefore please don't try to run the app again before this time has elapsed.
