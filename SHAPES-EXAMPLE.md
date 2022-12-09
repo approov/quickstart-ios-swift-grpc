@@ -75,7 +75,7 @@ import ApproovGRPC
 In the same file, locate and uncomment line 46 inside the viewDidLoad function to initialize the ApproovService. The Approov SDK needs a configuration string to identify the account associated with the app. You will have received this in your Approov onboarding email (it will be something like #123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=). Copy this into the source file, replacing the text <enter-your-config-string-here>.
 
 ```swift
-try! ApproovService.initialize(config: "<enter-you-config-string-here>")
+try! ApproovService.initialize(config: "<enter-your-config-string-here>")
 ```
 
 The configuration string can also be obtained by issuing this Approov CLI command:
