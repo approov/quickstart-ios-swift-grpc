@@ -46,7 +46,7 @@ Get the latest Approov integration by using the `Swift Package Manager`. The rep
 
 ![Add Package Repository](readme-images/add-package-repository.png)
 
-You will then have to select the relevant `ApproovGRPC` package version you wish to use; each version is identified by a tag, with the main branch usually pointing to the latest version. Select the `Exact Version` option and enter the package version, in this case `3.0.0`.
+You will then have to select the relevant `ApproovGRPC` package version you wish to use; each version is identified by a tag, with the main branch usually pointing to the latest version. Select the `Exact Version` option and enter either the package version, i.e. `3.1.0`, or use the latest available one which should be selected for you.
 Once you click `Add Package` the last screen will confirm the package product and target selection:
 
 ![Target Selection](readme-images/add-package-confirm.png)
