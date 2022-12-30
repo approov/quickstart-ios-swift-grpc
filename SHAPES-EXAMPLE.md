@@ -18,6 +18,8 @@ Select your codesigning certificate in the `Signing & Capabilities` tab and run 
 
 ![Codesign App](readme-images/codesign-app.png)
 
+> Note that from Xcode 14, the minimum deployment target is iOS 11.0 and you will need to update to this in the general settings to allow compilation.
+
 Once the application is running you will see two buttons:
 
 <p>
@@ -46,7 +48,8 @@ Get the latest Approov integration by using the `Swift Package Manager`. The rep
 
 ![Add Package Repository](readme-images/add-package-repository.png)
 
-You will then have to select the relevant `ApproovGRPC` package version you wish to use; each version is identified by a tag, with the main branch usually pointing to the latest version. Select the `Exact Version` option and enter either the package version, i.e. `3.1.0`, or use the latest available one which should be selected for you.
+You will then have to select the relevant `ApproovGRPC` package version you wish to use; each version is identified by a tag, with the main branch usually pointing to the latest version. Select the `Exact Version` option and the latest available one which should be selected for you.
+
 Once you click `Add Package` the last screen will confirm the package product and target selection:
 
 ![Target Selection](readme-images/add-package-confirm.png)
