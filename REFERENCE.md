@@ -9,7 +9,7 @@ Various methods may throw an `ApproovError` if there is a problem. The enumerati
 
 If a method throws an `ApproovError.rejectionError`, then this indicates the problem was that the app failed attestation. An additional associated value `ARC` provides the [Attestation Response Code](https://approov.io/docs/latest/approov-usage-documentation/#attestation-response-code), which could be provided to the user for communication with your app support to determine the reason for failure, without this being revealed to the end user. The associated value `rejectionReasons` provides the [Rejection Reasons](https://approov.io/docs/latest/approov-usage-documentation/#rejection-reasons) if the feature is enabled, providing a comma separated list of reasons why the app attestation was rejected.
 
-## Initialize
+## initialize
 Initializes the Approov SDK and thus enables the Approov features. The `config` will have been provided in the initial onboarding or email or can be [obtained using the Approov CLI](https://approov.io/docs/latest/approov-usage-documentation/#getting-the-initial-sdk-configuration). This will generate an error if a second attempt is made at initialization with a different `config`.
 
 ```swift
