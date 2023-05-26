@@ -45,7 +45,7 @@ These values can be changed at any time and will propagate within 5 minutes to a
 
 You can define up to 16 different secret values in this way.
 
-# SUBSTITUTING THE SECRET AUTOMATICALLY
+## SUBSTITUTING THE SECRET AUTOMATICALLY
 If the secret is presented in an API header or query parameter, and you are able to use the `ApproovService` networking stack, then Approov can automatically substitute the secret value at runtime. You should use this method wherever possible.
 
 If the published code of your app currently uses `your-secret-value` then replace it with the value `your-secret-name`. This provides a placeholder value which can then be automatically substituted with the actual secret value at runtime, for validly attesting apps. The shipped app code will only contain the placeholder values.
