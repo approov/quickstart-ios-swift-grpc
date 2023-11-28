@@ -23,14 +23,14 @@ import UIKit
 
 
 class ViewController: UIViewController {
-    
+
     @IBOutlet weak var statusImageView: UIImageView!
     @IBOutlet weak var statusTextView: UILabel!
 
     var shapes: Shapes_ShapeClient?
     var group: EventLoopGroup?
 
-    // API key for grpc.shapes.approov.io:50051
+    // API key for grpc.shapes.approov.io:443
     let apiKeyHeaderName = "Api-Key"
     let apiSecretKey = "yXClypapWNHIifHUWmBIyPFAm"
     // *** UNCOMMENT THE LINE BELOW FOR APPROOV SECRETS PROTECTION (and comment the line above) ***
@@ -51,7 +51,7 @@ class ViewController: UIViewController {
 
         // Open GRPC channel
         let hostname = "grpc.shapes.approov.io"
-        let port = 50051
+        let port = 443
         let builder = ClientConnection.usingTLSBackedByNIOSSL(on: group!)
         // *** UNCOMMENT THE LINE BELOW FOR APPROOV (and comment the line above) ***
         // let builder = ApproovClientConnection.usingTLSBackedByNIOSSL(on: group!)
@@ -107,7 +107,7 @@ class ViewController: UIViewController {
             }
         }
     }
-    
+
     // Check Approov-protected shapes endpoint
     @IBAction func checkShape() {
         // Display busy screen
