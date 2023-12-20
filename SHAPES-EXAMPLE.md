@@ -8,7 +8,7 @@ This quickstart is written specifically for native iOS apps that are written in 
 * [Xcode](https://developer.apple.com/xcode/) version 13 installed (version 13.3 is used in this guide)
 * The [protocol compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation), `protoc`, for Google's Protocol Buffers (version 3.18.0 is used in this guide) and the [Swift protoc plugins](https://github.com/grpc/grpc-swift#getting-the-protoc-plugins) (downloading a [binary release from GitHub](https://github.com/protocolbuffers/protobuf/releases) and installation through `homebrew` have both been used successfully with this guide)
 * The contents of this repo
-* An Apple mobile device with iOS 10 or higher
+* An Apple mobile device with iOS 12 or higher
 
 ## RUNNING THE SHAPES APP WITHOUT APPROOV
 
@@ -17,8 +17,6 @@ Open the `ApproovShapes.xcodeproj` project in the `shapes-app` folder using `Fil
 Select your codesigning certificate in the `Signing & Capabilities` tab and run the application on your prefered device.
 
 ![Codesign App](readme-images/codesign-app.png)
-
-> Note that from Xcode 14, the minimum deployment target is iOS 11.0 and you will need to update to this in the general settings to allow compilation.
 
 Once the application is running you will see two buttons:
 
