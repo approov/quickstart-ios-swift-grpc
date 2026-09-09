@@ -8,7 +8,7 @@ This quickstart is written specifically for native iOS apps that are written in 
 * [Xcode](https://developer.apple.com/xcode/) version 13 installed (version 13.3 is used in this guide)
 * The [protocol compiler](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation), `protoc`, for Google's Protocol Buffers (version 3.18.0 is used in this guide) and the [Swift protoc plugins](https://github.com/grpc/grpc-swift#getting-the-protoc-plugins) (downloading a [binary release from GitHub](https://github.com/protocolbuffers/protobuf/releases) and installation through `homebrew` have both been used successfully with this guide)
 * The contents of this repo
-* An Apple mobile device with iOS 12 or higher
+* An Apple mobile device with iOS 15 or higher
 
 ## RUNNING THE SHAPES APP WITHOUT APPROOV
 
